@@ -1,11 +1,6 @@
 import Quill from 'quill';
 import ColorPicker from '../ui/color-picker';
-import extend from 'extend';
-
-const Theme = Quill.import('themes/snow');
-
-const Picker = Quill.import('ui/picker');
-const IconPicker = Quill.import('ui/icon-picker');
+import SnowTheme from 'quill/themes/snow.js';
 
 const ALIGNS = [false, 'center', 'right', 'justify'];
 
@@ -54,8 +49,11 @@ const HEADERS = ['1', '2', '3', false];
 
 const SIZES = ['small', false, 'large', 'huge'];
 
-export default class SnowTheme extends Theme {
+export default class MyTheme extends SnowTheme {
   buildPickers(selects, icons) {
+    const Picker = Quill.import('ui/picker');
+    const IconPicker = Quill.import('ui/icon-picker');
+
     this.pickers = selects.map((select) => {
       if (select.classList.contains('ql-align')) {
         if (select.querySelector('option') == null) {
