@@ -157,9 +157,9 @@ var QuillColorPickerEnhance = (function (exports) {
    * _.isArray(_.noop);
    * // => false
    */
-  var isArray$1 = Array.isArray;
+  var isArray = Array.isArray;
 
-  var isArray$2 = isArray$1;
+  var isArray$1 = isArray;
 
   /**
    * Checks if `value` is the
@@ -491,7 +491,7 @@ var QuillColorPickerEnhance = (function (exports) {
     };
   }
 
-  var defineProperty$1 = (function() {
+  var defineProperty = (function() {
     try {
       var func = getNative(Object, 'defineProperty');
       func({}, '', {});
@@ -499,7 +499,7 @@ var QuillColorPickerEnhance = (function (exports) {
     } catch (e) {}
   }());
 
-  var defineProperty$2 = defineProperty$1;
+  var defineProperty$1 = defineProperty;
 
   /**
    * The base implementation of `setToString` without support for hot loop shorting.
@@ -509,8 +509,8 @@ var QuillColorPickerEnhance = (function (exports) {
    * @param {Function} string The `toString` result.
    * @returns {Function} Returns `func`.
    */
-  var baseSetToString = !defineProperty$2 ? identity : function(func, string) {
-    return defineProperty$2(func, 'toString', {
+  var baseSetToString = !defineProperty$1 ? identity : function(func, string) {
+    return defineProperty$1(func, 'toString', {
       'configurable': true,
       'enumerable': false,
       'value': constant(string),
@@ -587,8 +587,8 @@ var QuillColorPickerEnhance = (function (exports) {
    * @param {*} value The value to assign.
    */
   function baseAssignValue(object, key, value) {
-    if (key == '__proto__' && defineProperty$2) {
-      defineProperty$2(object, key, {
+    if (key == '__proto__' && defineProperty$1) {
+      defineProperty$1(object, key, {
         'configurable': true,
         'enumerable': true,
         'value': value,
@@ -1133,7 +1133,7 @@ var QuillColorPickerEnhance = (function (exports) {
    * @returns {Array} Returns the array of property names.
    */
   function arrayLikeKeys(value, inherited) {
-    var isArr = isArray$2(value),
+    var isArr = isArray$1(value),
         isArg = !isArr && isArguments$1(value),
         isBuff = !isArr && !isArg && isBuffer$1(value),
         isType = !isArr && !isArg && !isBuff && isTypedArray$1(value),
@@ -1777,7 +1777,7 @@ var QuillColorPickerEnhance = (function (exports) {
    * _.isPlainObject(Object.create(null));
    * // => true
    */
-  function isPlainObject$1(value) {
+  function isPlainObject(value) {
     if (!isObjectLike(value) || baseGetTag(value) != objectTag$3) {
       return false;
     }
@@ -2083,7 +2083,7 @@ var QuillColorPickerEnhance = (function (exports) {
    */
   function baseGetAllKeys(object, keysFunc, symbolsFunc) {
     var result = keysFunc(object);
-    return isArray$2(object) ? result : arrayPush(result, symbolsFunc(object));
+    return isArray$1(object) ? result : arrayPush(result, symbolsFunc(object));
   }
 
   /**
@@ -2515,7 +2515,7 @@ var QuillColorPickerEnhance = (function (exports) {
     if (!isObject(value)) {
       return value;
     }
-    var isArr = isArray$2(value);
+    var isArr = isArray$1(value);
     if (isArr) {
       result = initCloneArray(value);
       if (!isDeep) {
@@ -3022,8 +3022,8 @@ var QuillColorPickerEnhance = (function (exports) {
    * @returns {boolean} Returns `true` if the objects are equivalent, else `false`.
    */
   function baseIsEqualDeep(object, other, bitmask, customizer, equalFunc, stack) {
-    var objIsArr = isArray$2(object),
-        othIsArr = isArray$2(other),
+    var objIsArr = isArray$1(object),
+        othIsArr = isArray$1(other),
         objTag = objIsArr ? arrayTag : getTag$1(object),
         othTag = othIsArr ? arrayTag : getTag$1(other);
 
@@ -3253,13 +3253,13 @@ var QuillColorPickerEnhance = (function (exports) {
     var isCommon = newValue === undefined;
 
     if (isCommon) {
-      var isArr = isArray$2(srcValue),
+      var isArr = isArray$1(srcValue),
           isBuff = !isArr && isBuffer$1(srcValue),
           isTyped = !isArr && !isBuff && isTypedArray$1(srcValue);
 
       newValue = srcValue;
       if (isArr || isBuff || isTyped) {
-        if (isArray$2(objValue)) {
+        if (isArray$1(objValue)) {
           newValue = objValue;
         }
         else if (isArrayLikeObject(objValue)) {
@@ -3277,7 +3277,7 @@ var QuillColorPickerEnhance = (function (exports) {
           newValue = [];
         }
       }
-      else if (isPlainObject$1(srcValue) || isArguments$1(srcValue)) {
+      else if (isPlainObject(srcValue) || isArguments$1(srcValue)) {
         newValue = objValue;
         if (isArguments$1(objValue)) {
           newValue = toPlainObject(objValue);
@@ -11446,12 +11446,12 @@ var QuillColorPickerEnhance = (function (exports) {
     }
   }
 
-  let Theme$1 = class Theme {
+  class Theme {
     static DEFAULTS = {
       modules: {}
     };
     static themes = {
-      default: Theme$1
+      default: Theme
     };
     modules = {};
     constructor(quill, options) {
@@ -11471,7 +11471,7 @@ var QuillColorPickerEnhance = (function (exports) {
       this.modules[name] = new ModuleClass(this.quill, this.options.modules[name] || {});
       return this.modules[name];
     }
-  };
+  }
 
   const getParentElement = element => element.parentElement || element.getRootNode().host || null;
   const getElementRect = element => {
@@ -11608,7 +11608,7 @@ var QuillColorPickerEnhance = (function (exports) {
       delta: Delta,
       parchment: Parchment,
       'core/module': Module,
-      'core/theme': Theme$1
+      'core/theme': Theme
     };
     static debug(limit) {
       if (limit === true) {
@@ -12028,7 +12028,7 @@ var QuillColorPickerEnhance = (function (exports) {
       throw new Error('Invalid Quill container');
     }
     const shouldUseDefaultTheme = !options.theme || options.theme === Quill.DEFAULTS.theme;
-    const theme = shouldUseDefaultTheme ? Theme$1 : Quill.import(`themes/${options.theme}`);
+    const theme = shouldUseDefaultTheme ? Theme : Quill.import(`themes/${options.theme}`);
     if (!theme) {
       throw new Error(`Invalid theme ${options.theme}. Did you register it?`);
     }
@@ -15586,7 +15586,7 @@ var QuillColorPickerEnhance = (function (exports) {
   function toggleAriaAttribute(element, attribute) {
     element.setAttribute(attribute, `${!(element.getAttribute(attribute) === 'true')}`);
   }
-  let Picker$2 = class Picker {
+  let Picker$1 = class Picker {
     constructor(select) {
       this.select = select;
       this.container = document.createElement('span');
@@ -15749,7 +15749,7 @@ var QuillColorPickerEnhance = (function (exports) {
     }
   };
 
-  let ColorPicker$1 = class ColorPicker extends Picker$2 {
+  let ColorPicker$1 = class ColorPicker extends Picker$1 {
     constructor(select, label) {
       super(select);
       this.label.innerHTML = label;
@@ -15777,7 +15777,7 @@ var QuillColorPickerEnhance = (function (exports) {
     }
   };
 
-  let IconPicker$1 = class IconPicker extends Picker$2 {
+  class IconPicker extends Picker$1 {
     constructor(select, icons) {
       super(select);
       this.container.classList.add('ql-icon-picker');
@@ -15795,7 +15795,7 @@ var QuillColorPickerEnhance = (function (exports) {
         this.label.innerHTML = item.innerHTML;
       }
     }
-  };
+  }
 
   const isScrollable = el => {
     const {
@@ -15857,7 +15857,7 @@ var QuillColorPickerEnhance = (function (exports) {
   const FONTS$1 = [false, 'serif', 'monospace'];
   const HEADERS$1 = ['1', '2', '3', false];
   const SIZES$1 = ['small', false, 'large', 'huge'];
-  class BaseTheme extends Theme$1 {
+  class BaseTheme extends Theme {
     constructor(quill, options) {
       super(quill, options);
       const listener = e => {
@@ -15923,7 +15923,7 @@ var QuillColorPickerEnhance = (function (exports) {
             fillSelect$1(select, ALIGNS$1);
           }
           if (typeof icons.align === 'object') {
-            return new IconPicker$1(select, icons.align);
+            return new IconPicker(select, icons.align);
           }
         }
         if (select.classList.contains('ql-background') || select.classList.contains('ql-color')) {
@@ -15942,7 +15942,7 @@ var QuillColorPickerEnhance = (function (exports) {
             fillSelect$1(select, SIZES$1);
           }
         }
-        return new Picker$2(select);
+        return new Picker$1(select);
       });
       const update = () => {
         this.pickers.forEach(picker => {
@@ -15952,7 +15952,7 @@ var QuillColorPickerEnhance = (function (exports) {
       this.quill.on(Emitter.events.EDITOR_CHANGE, update);
     }
   }
-  BaseTheme.DEFAULTS = merge$1({}, Theme$1.DEFAULTS, {
+  BaseTheme.DEFAULTS = merge$1({}, Theme.DEFAULTS, {
     modules: {
       toolbar: {
         handlers: {
@@ -16269,7 +16269,7 @@ var QuillColorPickerEnhance = (function (exports) {
       this.root.removeAttribute('data-mode');
     }
   }
-  let SnowTheme$1 = class SnowTheme extends BaseTheme {
+  class SnowTheme extends BaseTheme {
     constructor(quill, options) {
       if (options.modules.toolbar != null && options.modules.toolbar.container == null) {
         options.modules.toolbar.container = TOOLBAR_CONFIG;
@@ -16294,8 +16294,8 @@ var QuillColorPickerEnhance = (function (exports) {
         }
       }
     }
-  };
-  SnowTheme$1.DEFAULTS = merge$1({}, BaseTheme.DEFAULTS, {
+  }
+  SnowTheme.DEFAULTS = merge$1({}, BaseTheme.DEFAULTS, {
     modules: {
       toolbar: {
         handlers: {
@@ -16362,10 +16362,10 @@ var QuillColorPickerEnhance = (function (exports) {
     'modules/table': Table,
     'modules/toolbar': Toolbar,
     'themes/bubble': BubbleTheme,
-    'themes/snow': SnowTheme$1,
+    'themes/snow': SnowTheme,
     'ui/icons': Icons,
-    'ui/picker': Picker$2,
-    'ui/icon-picker': IconPicker$1,
+    'ui/picker': Picker$1,
+    'ui/icon-picker': IconPicker,
     'ui/color-picker': ColorPicker$1,
     'ui/tooltip': Tooltip
   }, true);
@@ -16374,9 +16374,9 @@ var QuillColorPickerEnhance = (function (exports) {
 
   var icons = { color: { cancel } };
 
-  const Picker$1 = Quill.import('ui/color-picker');
+  const Picker = Quill.import('ui/color-picker');
 
-  class ColorPicker extends Picker$1 {
+  class ColorPicker extends Picker {
     constructor(select, label, quill, format) {
       super(select);
       this.quill = quill;
@@ -16463,127 +16463,6 @@ var QuillColorPickerEnhance = (function (exports) {
       .map((x) => parseInt(x, 16));
   }
 
-  var hasOwn = Object.prototype.hasOwnProperty;
-  var toStr = Object.prototype.toString;
-  var defineProperty = Object.defineProperty;
-  var gOPD = Object.getOwnPropertyDescriptor;
-
-  var isArray = function isArray(arr) {
-  	if (typeof Array.isArray === 'function') {
-  		return Array.isArray(arr);
-  	}
-
-  	return toStr.call(arr) === '[object Array]';
-  };
-
-  var isPlainObject = function isPlainObject(obj) {
-  	if (!obj || toStr.call(obj) !== '[object Object]') {
-  		return false;
-  	}
-
-  	var hasOwnConstructor = hasOwn.call(obj, 'constructor');
-  	var hasIsPrototypeOf = obj.constructor && obj.constructor.prototype && hasOwn.call(obj.constructor.prototype, 'isPrototypeOf');
-  	// Not own constructor property must be Object
-  	if (obj.constructor && !hasOwnConstructor && !hasIsPrototypeOf) {
-  		return false;
-  	}
-
-  	// Own properties are enumerated firstly, so to speed up,
-  	// if last one is own, then all properties are own.
-  	var key;
-  	for (key in obj) { /**/ }
-
-  	return typeof key === 'undefined' || hasOwn.call(obj, key);
-  };
-
-  // If name is '__proto__', and Object.defineProperty is available, define __proto__ as an own property on target
-  var setProperty = function setProperty(target, options) {
-  	if (defineProperty && options.name === '__proto__') {
-  		defineProperty(target, options.name, {
-  			enumerable: true,
-  			configurable: true,
-  			value: options.newValue,
-  			writable: true
-  		});
-  	} else {
-  		target[options.name] = options.newValue;
-  	}
-  };
-
-  // Return undefined instead of __proto__ if '__proto__' is not an own property
-  var getProperty = function getProperty(obj, name) {
-  	if (name === '__proto__') {
-  		if (!hasOwn.call(obj, name)) {
-  			return void 0;
-  		} else if (gOPD) {
-  			// In early versions of node, obj['__proto__'] is buggy when obj has
-  			// __proto__ as an own property. Object.getOwnPropertyDescriptor() works.
-  			return gOPD(obj, name).value;
-  		}
-  	}
-
-  	return obj[name];
-  };
-
-  var extend = function extend() {
-  	var options, name, src, copy, copyIsArray, clone;
-  	var target = arguments[0];
-  	var i = 1;
-  	var length = arguments.length;
-  	var deep = false;
-
-  	// Handle a deep copy situation
-  	if (typeof target === 'boolean') {
-  		deep = target;
-  		target = arguments[1] || {};
-  		// skip the boolean and the target
-  		i = 2;
-  	}
-  	if (target == null || (typeof target !== 'object' && typeof target !== 'function')) {
-  		target = {};
-  	}
-
-  	for (; i < length; ++i) {
-  		options = arguments[i];
-  		// Only deal with non-null/undefined values
-  		if (options != null) {
-  			// Extend the base object
-  			for (name in options) {
-  				src = getProperty(target, name);
-  				copy = getProperty(options, name);
-
-  				// Prevent never-ending loop
-  				if (target !== copy) {
-  					// Recurse if we're merging plain objects or arrays
-  					if (deep && copy && (isPlainObject(copy) || (copyIsArray = isArray(copy)))) {
-  						if (copyIsArray) {
-  							copyIsArray = false;
-  							clone = src && isArray(src) ? src : [];
-  						} else {
-  							clone = src && isPlainObject(src) ? src : {};
-  						}
-
-  						// Never move original objects, clone them
-  						setProperty(target, { name: name, newValue: extend(deep, clone, copy) });
-
-  					// Don't bring in undefined values
-  					} else if (typeof copy !== 'undefined') {
-  						setProperty(target, { name: name, newValue: copy });
-  					}
-  				}
-  			}
-  		}
-  	}
-
-  	// Return the modified object
-  	return target;
-  };
-
-  const Theme = Quill.import('themes/snow');
-
-  const Picker = Quill.import('ui/picker');
-  const IconPicker = Quill.import('ui/icon-picker');
-
   const ALIGNS = [false, 'center', 'right', 'justify'];
 
   const COLORS = [
@@ -16631,8 +16510,11 @@ var QuillColorPickerEnhance = (function (exports) {
 
   const SIZES = ['small', false, 'large', 'huge'];
 
-  class SnowTheme extends Theme {
+  class MyTheme extends SnowTheme {
     buildPickers(selects, icons) {
+      const Picker = Quill.import('ui/picker');
+      const IconPicker = Quill.import('ui/icon-picker');
+
       this.pickers = selects.map((select) => {
         if (select.classList.contains('ql-align')) {
           if (select.querySelector('option') == null) {
@@ -16668,17 +16550,6 @@ var QuillColorPickerEnhance = (function (exports) {
     }
   }
 
-  SnowTheme.DEFAULTS = extend(true, {}, Theme.DEFAULTS, {
-    modules: {
-      toolbar: {
-        handlers: {
-          color: pickerHandler('color'),
-          background: pickerHandler('background')
-        }
-      }
-    }
-  });
-
   function fillSelect(select, values, defaultValue = false) {
     values.forEach((value) => {
       const option = document.createElement('option');
@@ -16691,33 +16562,7 @@ var QuillColorPickerEnhance = (function (exports) {
     });
   }
 
-  function pickerHandler(format) {
-    return function (value) {
-      if (value === 'custom-picker') {
-        const _picker = this.container.querySelector(`.custom-picker.${format}`);
-
-        const picker =
-          _picker ||
-          (() => {
-            const picker = document.createElement('input');
-            picker.type = 'color';
-            picker.hidden = true;
-            picker.classList.add('custom-picker', format);
-            this.container.appendChild(picker);
-            return picker;
-          })();
-
-        picker.addEventListener('change', () => {
-          this.quill.format(format, picker.value);
-        });
-        picker.click();
-      } else {
-        this.quill.format(format, value);
-      }
-    };
-  }
-
-  exports.SnowTheme = SnowTheme;
+  exports.SnowTheme = MyTheme;
 
   return exports;
 
