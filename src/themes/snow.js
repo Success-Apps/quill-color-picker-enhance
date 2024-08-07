@@ -91,18 +91,7 @@ export default class SnowTheme extends Theme {
   }
 }
 
-SnowTheme.DEFAULTS = extend(true, {}, Theme.DEFAULTS, {
-  modules: {
-    toolbar: {
-      handlers: {
-        color: pickerHandler('color'),
-        background: pickerHandler('background')
-      }
-    }
-  }
-});
-
-function fillSelect(select, values, defaultValue = false) {
+export function fillSelect(select, values, defaultValue = false) {
   values.forEach((value) => {
     const option = document.createElement('option');
     if (value === defaultValue) {
@@ -114,7 +103,7 @@ function fillSelect(select, values, defaultValue = false) {
   });
 }
 
-function pickerHandler(format) {
+export function pickerHandler(format) {
   return function (value) {
     if (value === 'custom-picker') {
       const _picker = this.container.querySelector(`.custom-picker.${format}`);
