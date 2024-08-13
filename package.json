@@ -20,7 +20,7 @@
   "packageManager": "yarn@3.2.4",
   "dependencies": {
     "extend": "^3.0.2",
-    "quill": "^2.0.0"
+    "quill": "^2.0.2"
   },
   "devDependencies": {
     "@rollup/plugin-commonjs": "^23.0.2",
