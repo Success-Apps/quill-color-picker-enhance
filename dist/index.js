@@ -10505,7 +10505,7 @@ var QuillColorPickerEnhance = (function (exports) {
       });
     });
   });
-  class Emitter extends EventEmitter {
+  let Emitter$1 = class Emitter extends EventEmitter {
     static events = {
       EDITOR_CHANGE: 'editor-change',
       SCROLL_BEFORE_UPDATE: 'scroll-before-update',
@@ -10562,16 +10562,16 @@ var QuillColorPickerEnhance = (function (exports) {
         handler
       });
     }
-  }
+  };
 
   const debug$4 = namespace('quill:selection');
-  class Range {
+  let Range$1 = class Range {
     constructor(index) {
       let length = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 0;
       this.index = index;
       this.length = length;
     }
-  }
+  };
   class Selection {
     constructor(scroll, emitter) {
       this.emitter = emitter;
@@ -10582,34 +10582,34 @@ var QuillColorPickerEnhance = (function (exports) {
       // @ts-expect-error
       this.cursor = this.scroll.create('cursor', this);
       // savedRange is last non-null range
-      this.savedRange = new Range(0, 0);
+      this.savedRange = new Range$1(0, 0);
       this.lastRange = this.savedRange;
       this.lastNative = null;
       this.handleComposition();
       this.handleDragging();
       this.emitter.listenDOM('selectionchange', document, () => {
         if (!this.mouseDown && !this.composing) {
-          setTimeout(this.update.bind(this, Emitter.sources.USER), 1);
+          setTimeout(this.update.bind(this, Emitter$1.sources.USER), 1);
         }
       });
-      this.emitter.on(Emitter.events.SCROLL_BEFORE_UPDATE, () => {
+      this.emitter.on(Emitter$1.events.SCROLL_BEFORE_UPDATE, () => {
         if (!this.hasFocus()) return;
         const native = this.getNativeRange();
         if (native == null) return;
         if (native.start.node === this.cursor.textNode) return; // cursor.restore() will handle
-        this.emitter.once(Emitter.events.SCROLL_UPDATE, (source, mutations) => {
+        this.emitter.once(Emitter$1.events.SCROLL_UPDATE, (source, mutations) => {
           try {
             if (this.root.contains(native.start.node) && this.root.contains(native.end.node)) {
               this.setNativeRange(native.start.node, native.start.offset, native.end.node, native.end.offset);
             }
             const triggeredByTyping = mutations.some(mutation => mutation.type === 'characterData' || mutation.type === 'childList' || mutation.type === 'attributes' && mutation.target === this.root);
-            this.update(triggeredByTyping ? Emitter.sources.SILENT : source);
+            this.update(triggeredByTyping ? Emitter$1.sources.SILENT : source);
           } catch (ignored) {
             // ignore
           }
         });
       });
-      this.emitter.on(Emitter.events.SCROLL_OPTIMIZE, (mutations, context) => {
+      this.emitter.on(Emitter$1.events.SCROLL_OPTIMIZE, (mutations, context) => {
         if (context.range) {
           const {
             startNode,
@@ -10618,16 +10618,16 @@ var QuillColorPickerEnhance = (function (exports) {
             endOffset
           } = context.range;
           this.setNativeRange(startNode, startOffset, endNode, endOffset);
-          this.update(Emitter.sources.SILENT);
+          this.update(Emitter$1.sources.SILENT);
         }
       });
-      this.update(Emitter.sources.SILENT);
+      this.update(Emitter$1.sources.SILENT);
     }
     handleComposition() {
-      this.emitter.on(Emitter.events.COMPOSITION_BEFORE_START, () => {
+      this.emitter.on(Emitter$1.events.COMPOSITION_BEFORE_START, () => {
         this.composing = true;
       });
-      this.emitter.on(Emitter.events.COMPOSITION_END, () => {
+      this.emitter.on(Emitter$1.events.COMPOSITION_END, () => {
         this.composing = false;
         if (this.cursor.parent) {
           const range = this.cursor.restore();
@@ -10644,7 +10644,7 @@ var QuillColorPickerEnhance = (function (exports) {
       });
       this.emitter.listenDOM('mouseup', document.body, () => {
         this.mouseDown = false;
-        this.update(Emitter.sources.USER);
+        this.update(Emitter$1.sources.USER);
       });
     }
     focus() {
@@ -10784,7 +10784,7 @@ var QuillColorPickerEnhance = (function (exports) {
       });
       const end = Math.min(Math.max(...indexes), this.scroll.length() - 1);
       const start = Math.min(end, ...indexes);
-      return new Range(start, end - start);
+      return new Range$1(start, end - start);
     }
     normalizeNative(nativeRange) {
       if (!contains(this.root, nativeRange.startContainer) || !nativeRange.collapsed && !contains(this.root, nativeRange.endContainer)) {
@@ -10885,7 +10885,7 @@ var QuillColorPickerEnhance = (function (exports) {
     }
     setRange(range) {
       let force = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : false;
-      let source = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : Emitter.sources.API;
+      let source = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : Emitter$1.sources.API;
       if (typeof force === 'string') {
         source = force;
         force = false;
@@ -10900,7 +10900,7 @@ var QuillColorPickerEnhance = (function (exports) {
       this.update(source);
     }
     update() {
-      let source = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : Emitter.sources.USER;
+      let source = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : Emitter$1.sources.USER;
       const oldRange = this.lastRange;
       const [lastRange, nativeRange] = this.getRange();
       this.lastRange = lastRange;
@@ -10915,9 +10915,9 @@ var QuillColorPickerEnhance = (function (exports) {
             this.setNativeRange(range.startNode, range.startOffset, range.endNode, range.endOffset);
           }
         }
-        const args = [Emitter.events.SELECTION_CHANGE, cloneDeep$1(this.lastRange), cloneDeep$1(oldRange), source];
-        this.emitter.emit(Emitter.events.EDITOR_CHANGE, ...args);
-        if (source !== Emitter.sources.SILENT) {
+        const args = [Emitter$1.events.SELECTION_CHANGE, cloneDeep$1(this.lastRange), cloneDeep$1(oldRange), source];
+        this.emitter.emit(Emitter$1.events.EDITOR_CHANGE, ...args);
+        if (source !== Emitter$1.sources.SILENT) {
           this.emitter.emit(...args);
         }
       }
@@ -11303,7 +11303,7 @@ var QuillColorPickerEnhance = (function (exports) {
       index,
       length
     } = _ref;
-    return new Range(index + amount, length);
+    return new Range$1(index + amount, length);
   }
   function splitOpLines(ops) {
     const split = [];
@@ -11432,16 +11432,16 @@ var QuillColorPickerEnhance = (function (exports) {
     handleCompositionStart(event) {
       const blot = event.target instanceof Node ? this.scroll.find(event.target, true) : null;
       if (blot && !(blot instanceof Embed)) {
-        this.emitter.emit(Emitter.events.COMPOSITION_BEFORE_START, event);
+        this.emitter.emit(Emitter$1.events.COMPOSITION_BEFORE_START, event);
         this.scroll.batchStart();
-        this.emitter.emit(Emitter.events.COMPOSITION_START, event);
+        this.emitter.emit(Emitter$1.events.COMPOSITION_START, event);
         this.isComposing = true;
       }
     }
     handleCompositionEnd(event) {
-      this.emitter.emit(Emitter.events.COMPOSITION_BEFORE_END, event);
+      this.emitter.emit(Emitter$1.events.COMPOSITION_BEFORE_END, event);
       this.scroll.batchEnd();
-      this.emitter.emit(Emitter.events.COMPOSITION_END, event);
+      this.emitter.emit(Emitter$1.events.COMPOSITION_END, event);
       this.isComposing = false;
     }
   }
@@ -11601,8 +11601,8 @@ var QuillColorPickerEnhance = (function (exports) {
       registry: globalRegistry,
       theme: 'default'
     };
-    static events = Emitter.events;
-    static sources = Emitter.sources;
+    static events = Emitter$1.events;
+    static sources = Emitter$1.sources;
     static version = "2.0.2";
     static imports = {
       delta: Delta,
@@ -11673,7 +11673,7 @@ var QuillColorPickerEnhance = (function (exports) {
       instances.set(this.container, this);
       this.root = this.addContainer('ql-editor');
       this.root.classList.add('ql-blank');
-      this.emitter = new Emitter();
+      this.emitter = new Emitter$1();
       const scrollBlotName = ScrollBlot$1.blotName;
       const ScrollBlot = this.options.registry.query(scrollBlotName);
       if (!ScrollBlot || !('blotName' in ScrollBlot)) {
@@ -11693,12 +11693,12 @@ var QuillColorPickerEnhance = (function (exports) {
       this.theme.addModule('input');
       this.theme.addModule('uiNode');
       this.theme.init();
-      this.emitter.on(Emitter.events.EDITOR_CHANGE, type => {
-        if (type === Emitter.events.TEXT_CHANGE) {
+      this.emitter.on(Emitter$1.events.EDITOR_CHANGE, type => {
+        if (type === Emitter$1.events.TEXT_CHANGE) {
           this.root.classList.toggle('ql-blank', this.editor.isBlank());
         }
       });
-      this.emitter.on(Emitter.events.SCROLL_UPDATE, (source, mutations) => {
+      this.emitter.on(Emitter$1.events.SCROLL_UPDATE, (source, mutations) => {
         const oldRange = this.selection.lastRange;
         const [newRange] = this.selection.getRange();
         const selectionInfo = oldRange && newRange ? {
@@ -11707,7 +11707,7 @@ var QuillColorPickerEnhance = (function (exports) {
         } : undefined;
         modify.call(this, () => this.editor.update(null, mutations, selectionInfo), source);
       });
-      this.emitter.on(Emitter.events.SCROLL_EMBED_UPDATE, (blot, delta) => {
+      this.emitter.on(Emitter$1.events.SCROLL_EMBED_UPDATE, (blot, delta) => {
         const oldRange = this.selection.lastRange;
         const [newRange] = this.selection.getRange();
         const selectionInfo = oldRange && newRange ? {
@@ -11779,7 +11779,7 @@ var QuillColorPickerEnhance = (function (exports) {
       }
     }
     format(name, value) {
-      let source = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : Emitter.sources.API;
+      let source = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : Emitter$1.sources.API;
       return modify.call(this, () => {
         const range = this.getSelection(true);
         let change = new Delta();
@@ -11796,7 +11796,7 @@ var QuillColorPickerEnhance = (function (exports) {
             [name]: value
           });
         }
-        this.setSelection(range, Emitter.sources.SILENT);
+        this.setSelection(range, Emitter$1.sources.SILENT);
         return change;
       }, source);
     }
@@ -11962,7 +11962,7 @@ var QuillColorPickerEnhance = (function (exports) {
       }
     }
     setContents(delta) {
-      let source = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : Emitter.sources.API;
+      let source = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : Emitter$1.sources.API;
       return modify.call(this, () => {
         delta = new Delta(delta);
         const length = this.getLength();
@@ -11981,26 +11981,26 @@ var QuillColorPickerEnhance = (function (exports) {
       } else {
         // @ts-expect-error
         [index, length,, source] = overload(index, length, source);
-        this.selection.setRange(new Range(Math.max(0, index), length), source);
-        if (source !== Emitter.sources.SILENT) {
+        this.selection.setRange(new Range$1(Math.max(0, index), length), source);
+        if (source !== Emitter$1.sources.SILENT) {
           this.scrollSelectionIntoView();
         }
       }
     }
     setText(text) {
-      let source = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : Emitter.sources.API;
+      let source = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : Emitter$1.sources.API;
       const delta = new Delta().insert(text);
       return this.setContents(delta, source);
     }
     update() {
-      let source = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : Emitter.sources.USER;
+      let source = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : Emitter$1.sources.USER;
       const change = this.scroll.update(source); // Will update selection before selection.update() does if text changes
       this.selection.update(source);
       // TODO this is usually undefined
       return change;
     }
     updateContents(delta) {
-      let source = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : Emitter.sources.API;
+      let source = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : Emitter$1.sources.API;
       return modify.call(this, () => {
         delta = new Delta(delta);
         return this.editor.applyDelta(delta);
@@ -12090,7 +12090,7 @@ var QuillColorPickerEnhance = (function (exports) {
   // Handle selection preservation and TEXT_CHANGE emission
   // common to modification APIs
   function modify(modifier, source, index, shift) {
-    if (!this.isEnabled() && source === Emitter.sources.USER && !this.allowReadOnlyEdits) {
+    if (!this.isEnabled() && source === Emitter$1.sources.USER && !this.allowReadOnlyEdits) {
       return new Delta();
     }
     let range = index == null ? null : this.getSelection();
@@ -12106,12 +12106,12 @@ var QuillColorPickerEnhance = (function (exports) {
         // @ts-expect-error index should always be number
         range = shiftRange(range, index, shift, source);
       }
-      this.setSelection(range, Emitter.sources.SILENT);
+      this.setSelection(range, Emitter$1.sources.SILENT);
     }
     if (change.length() > 0) {
-      const args = [Emitter.events.TEXT_CHANGE, change, oldDelta, source];
-      this.emitter.emit(Emitter.events.EDITOR_CHANGE, ...args);
-      if (source !== Emitter.sources.SILENT) {
+      const args = [Emitter$1.events.TEXT_CHANGE, change, oldDelta, source];
+      this.emitter.emit(Emitter$1.events.EDITOR_CHANGE, ...args);
+      if (source !== Emitter$1.sources.SILENT) {
         this.emitter.emit(...args);
       }
     }
@@ -12159,7 +12159,7 @@ var QuillColorPickerEnhance = (function (exports) {
       }
     }
     // Handle optional source
-    source = source || Emitter.sources.API;
+    source = source || Emitter$1.sources.API;
     // @ts-expect-error
     return [index, length, formats, source];
   }
@@ -12172,11 +12172,11 @@ var QuillColorPickerEnhance = (function (exports) {
     if (index && typeof index.transformPosition === 'function') {
       [start, end] = [range.index, range.index + range.length].map(pos =>
       // @ts-expect-error -- TODO: add a better type guard around `index`
-      index.transformPosition(pos, source !== Emitter.sources.USER));
+      index.transformPosition(pos, source !== Emitter$1.sources.USER));
     } else {
       [start, end] = [range.index, range.index + range.length].map(pos => {
         // @ts-expect-error -- TODO: add a better type guard around `index`
-        if (pos < index || pos === index && source === Emitter.sources.USER) return pos;
+        if (pos < index || pos === index && source === Emitter$1.sources.USER) return pos;
         if (length >= 0) {
           return pos + length;
         }
@@ -12184,7 +12184,7 @@ var QuillColorPickerEnhance = (function (exports) {
         return Math.max(index, pos + length);
       });
     }
-    return new Range(start, end - start);
+    return new Range$1(start, end - start);
   }
 
   class Container extends ContainerBlot$1 {}
@@ -12224,13 +12224,13 @@ var QuillColorPickerEnhance = (function (exports) {
       this.update(mutations);
     }
     emitMount(blot) {
-      this.emitter.emit(Emitter.events.SCROLL_BLOT_MOUNT, blot);
+      this.emitter.emit(Emitter$1.events.SCROLL_BLOT_MOUNT, blot);
     }
     emitUnmount(blot) {
-      this.emitter.emit(Emitter.events.SCROLL_BLOT_UNMOUNT, blot);
+      this.emitter.emit(Emitter$1.events.SCROLL_BLOT_UNMOUNT, blot);
     }
     emitEmbedUpdate(blot, change) {
-      this.emitter.emit(Emitter.events.SCROLL_EMBED_UPDATE, blot, change);
+      this.emitter.emit(Emitter$1.events.SCROLL_EMBED_UPDATE, blot, change);
     }
     deleteAt(index, length) {
       const [first, offset] = this.line(index);
@@ -12377,7 +12377,7 @@ var QuillColorPickerEnhance = (function (exports) {
       if (this.batch) return;
       super.optimize(mutations, context);
       if (mutations.length > 0) {
-        this.emitter.emit(Emitter.events.SCROLL_OPTIMIZE, mutations, context);
+        this.emitter.emit(Emitter$1.events.SCROLL_OPTIMIZE, mutations, context);
       }
     }
     path(index) {
@@ -12393,7 +12393,7 @@ var QuillColorPickerEnhance = (function (exports) {
         }
         return;
       }
-      let source = Emitter.sources.USER;
+      let source = Emitter$1.sources.USER;
       if (typeof mutations === 'string') {
         source = mutations;
       }
@@ -12408,11 +12408,11 @@ var QuillColorPickerEnhance = (function (exports) {
         return blot && !isUpdatable(blot);
       });
       if (mutations.length > 0) {
-        this.emitter.emit(Emitter.events.SCROLL_BEFORE_UPDATE, source, mutations);
+        this.emitter.emit(Emitter$1.events.SCROLL_BEFORE_UPDATE, source, mutations);
       }
       super.update(mutations.concat([])); // pass copy
       if (mutations.length > 0) {
-        this.emitter.emit(Emitter.events.SCROLL_UPDATE, source, mutations);
+        this.emitter.emit(Emitter$1.events.SCROLL_UPDATE, source, mutations);
       }
     }
     updateEmbedAt(index, key, change) {
@@ -14145,8 +14145,8 @@ var QuillColorPickerEnhance = (function (exports) {
             image
           });
         }, new Delta().retain(range.index).delete(range.length));
-        this.quill.updateContents(update, Emitter.sources.USER);
-        this.quill.setSelection(range.index + images.length, Emitter.sources.SILENT);
+        this.quill.updateContents(update, Emitter$1.sources.USER);
+        this.quill.setSelection(range.index + images.length, Emitter$1.sources.SILENT);
       });
     }
   };
@@ -15949,7 +15949,7 @@ var QuillColorPickerEnhance = (function (exports) {
           picker.update();
         });
       };
-      this.quill.on(Emitter.events.EDITOR_CHANGE, update);
+      this.quill.on(Emitter$1.events.EDITOR_CHANGE, update);
     }
   }
   BaseTheme.DEFAULTS = merge$1({}, Theme.DEFAULTS, {
@@ -16040,11 +16040,11 @@ var QuillColorPickerEnhance = (function (exports) {
               scrollTop
             } = this.quill.root;
             if (this.linkRange) {
-              this.quill.formatText(this.linkRange, 'link', value, Emitter.sources.USER);
+              this.quill.formatText(this.linkRange, 'link', value, Emitter$1.sources.USER);
               delete this.linkRange;
             } else {
               this.restoreFocus();
-              this.quill.format('link', value, Emitter.sources.USER);
+              this.quill.format('link', value, Emitter$1.sources.USER);
             }
             this.quill.root.scrollTop = scrollTop;
             break;
@@ -16062,11 +16062,11 @@ var QuillColorPickerEnhance = (function (exports) {
               const index = range.index + range.length;
               this.quill.insertEmbed(index,
               // @ts-expect-error Fix me later
-              this.root.getAttribute('data-mode'), value, Emitter.sources.USER);
+              this.root.getAttribute('data-mode'), value, Emitter$1.sources.USER);
               if (this.root.getAttribute('data-mode') === 'formula') {
-                this.quill.insertText(index + 1, ' ', Emitter.sources.USER);
+                this.quill.insertText(index + 1, ' ', Emitter$1.sources.USER);
               }
-              this.quill.setSelection(index + 2, Emitter.sources.USER);
+              this.quill.setSelection(index + 2, Emitter$1.sources.USER);
             }
             break;
           }
@@ -16109,9 +16109,9 @@ var QuillColorPickerEnhance = (function (exports) {
     static TEMPLATE = ['<span class="ql-tooltip-arrow"></span>', '<div class="ql-tooltip-editor">', '<input type="text" data-formula="e=mc^2" data-link="https://quilljs.com" data-video="Embed URL">', '<a class="ql-close"></a>', '</div>'].join('');
     constructor(quill, bounds) {
       super(quill, bounds);
-      this.quill.on(Emitter.events.EDITOR_CHANGE, (type, range, oldRange, source) => {
-        if (type !== Emitter.events.SELECTION_CHANGE) return;
-        if (range != null && range.length > 0 && source === Emitter.sources.USER) {
+      this.quill.on(Emitter$1.events.EDITOR_CHANGE, (type, range, oldRange, source) => {
+        if (type !== Emitter$1.events.SELECTION_CHANGE) return;
+        if (range != null && range.length > 0 && source === Emitter$1.sources.USER) {
           this.show();
           // Lock our width so we will expand beyond our offsetParent boundaries
           this.root.style.left = '0px';
@@ -16127,7 +16127,7 @@ var QuillColorPickerEnhance = (function (exports) {
             const lastLine = lines[lines.length - 1];
             const index = this.quill.getIndex(lastLine);
             const length = Math.min(lastLine.length() - 1, range.index + range.length - index);
-            const indexBounds = this.quill.getBounds(new Range(index, length));
+            const indexBounds = this.quill.getBounds(new Range$1(index, length));
             if (indexBounds != null) {
               this.position(indexBounds);
             }
@@ -16143,7 +16143,7 @@ var QuillColorPickerEnhance = (function (exports) {
       this.root.querySelector('.ql-close').addEventListener('click', () => {
         this.root.classList.remove('ql-editing');
       });
-      this.quill.on(Emitter.events.SCROLL_OPTIMIZE, () => {
+      this.quill.on(Emitter$1.events.SCROLL_OPTIMIZE, () => {
         // Let selection be restored by toolbar handlers before repositioning
         setTimeout(() => {
           if (this.root.classList.contains('ql-hidden')) return;
@@ -16214,7 +16214,7 @@ var QuillColorPickerEnhance = (function (exports) {
   }, {
     list: 'bullet'
   }], ['clean']];
-  class SnowTooltip extends BaseTooltip {
+  let SnowTooltip$1 = class SnowTooltip extends BaseTooltip {
     static TEMPLATE = ['<a class="ql-preview" rel="noopener noreferrer" target="_blank" href="about:blank"></a>', '<input type="text" data-formula="e=mc^2" data-link="https://quilljs.com" data-video="Embed URL">', '<a class="ql-action"></a>', '<a class="ql-remove"></a>'].join('');
     preview = this.root.querySelector('a.ql-preview');
     listen() {
@@ -16234,18 +16234,18 @@ var QuillColorPickerEnhance = (function (exports) {
         if (this.linkRange != null) {
           const range = this.linkRange;
           this.restoreFocus();
-          this.quill.formatText(range, 'link', false, Emitter.sources.USER);
+          this.quill.formatText(range, 'link', false, Emitter$1.sources.USER);
           delete this.linkRange;
         }
         event.preventDefault();
         this.hide();
       });
-      this.quill.on(Emitter.events.SELECTION_CHANGE, (range, oldRange, source) => {
+      this.quill.on(Emitter$1.events.SELECTION_CHANGE, (range, oldRange, source) => {
         if (range == null) return;
-        if (range.length === 0 && source === Emitter.sources.USER) {
+        if (range.length === 0 && source === Emitter$1.sources.USER) {
           const [link, offset] = this.quill.scroll.descendant(Link, range.index);
           if (link != null) {
-            this.linkRange = new Range(range.index - offset, link.length());
+            this.linkRange = new Range$1(range.index - offset, link.length());
             const preview = Link.formats(link.domNode);
             // @ts-expect-error Fix me later
             this.preview.textContent = preview;
@@ -16268,7 +16268,7 @@ var QuillColorPickerEnhance = (function (exports) {
       super.show();
       this.root.removeAttribute('data-mode');
     }
-  }
+  };
   class SnowTheme extends BaseTheme {
     constructor(quill, options) {
       if (options.modules.toolbar != null && options.modules.toolbar.container == null) {
@@ -16283,7 +16283,7 @@ var QuillColorPickerEnhance = (function (exports) {
         this.buildButtons(toolbar.container.querySelectorAll('button'), Icons);
         this.buildPickers(toolbar.container.querySelectorAll('select'), Icons);
         // @ts-expect-error
-        this.tooltip = new SnowTooltip(this.quill, this.options.bounds);
+        this.tooltip = new SnowTooltip$1(this.quill, this.options.bounds);
         if (toolbar.container.querySelector('.ql-link')) {
           this.quill.keyboard.addBinding({
             key: 'k',
@@ -16509,8 +16509,81 @@ var QuillColorPickerEnhance = (function (exports) {
   const HEADERS = ['1', '2', '3', false];
 
   const SIZES = ['small', false, 'large', 'huge'];
+  class SnowTooltip extends BaseTooltip {
+    static TEMPLATE = ['<a class="ql-preview" rel="noopener noreferrer" target="_blank" href="about:blank"></a>', '<input type="text" data-formula="e=mc^2" data-link="https://quilljs.com" data-video="Embed URL">', '<a class="ql-action"></a>', '<a class="ql-remove"></a>'].join('');
+    preview = this.root.querySelector('a.ql-preview');
+    listen() {
+      super.listen();
+      // @ts-expect-error Fix me later
+      this.root.querySelector('a.ql-action').addEventListener('click', event => {
+        if (this.root.classList.contains('ql-editing')) {
+          this.save();
+        } else {
+          // @ts-expect-error Fix me later
+          this.edit('link', this.preview.textContent);
+        }
+        event.preventDefault();
+      });
+      // @ts-expect-error Fix me later
+      this.root.querySelector('a.ql-remove').addEventListener('click', event => {
+        if (this.linkRange != null) {
+          const range = this.linkRange;
+          this.restoreFocus();
+          this.quill.formatText(range, 'link', false, Emitter.sources.USER);
+          delete this.linkRange;
+        }
+        event.preventDefault();
+        this.hide();
+      });
+      this.quill.on(Emitter.events.SELECTION_CHANGE, (range, oldRange, source) => {
+        if (range == null) return;
+        if (range.length === 0 && source === Emitter.sources.USER) {
+          const [link, offset] = this.quill.scroll.descendant(LinkBlot, range.index);
+          if (link != null) {
+            this.linkRange = new Range(range.index - offset, link.length());
+            const preview = LinkBlot.formats(link.domNode);
+            // @ts-expect-error Fix me later
+            this.preview.textContent = preview;
+            // @ts-expect-error Fix me later
+            this.preview.setAttribute('href', preview);
+            this.show();
+            const bounds = this.quill.getBounds(this.linkRange);
+            if (bounds != null) {
+              this.position(bounds);
+            }
+            return;
+          }
+        } else {
+          delete this.linkRange;
+        }
+        this.hide();
+      });
+    }
+    show() {
+      super.show();
+      this.root.removeAttribute('data-mode');
+    }
+  }
 
   class MyTheme extends SnowTheme {
+    extendToolbar(toolbar) {
+      if (toolbar.container != null) {
+        toolbar.container.classList.add('ql-snow');
+        this.buildButtons(toolbar.container.querySelectorAll('button'), icons);
+        this.buildPickers(toolbar.container.querySelectorAll('select'), icons);
+        // @ts-expect-error
+        this.tooltip = new SnowTooltip(this.quill, this.options.bounds);
+        if (toolbar.container.querySelector('.ql-link')) {
+          this.quill.keyboard.addBinding({
+            key: 'k',
+            shortKey: true
+          }, (_range, context) => {
+            toolbar.handlers.link.call(toolbar, !context.format.link);
+          });
+        }
+      }
+    }
+
     buildPickers(selects, icons) {
       const Picker = Quill.import('ui/picker');
       const IconPicker = Quill.import('ui/icon-picker');

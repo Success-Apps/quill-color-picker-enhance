@@ -1,6 +1,8 @@
 import Quill from 'quill';
 import ColorPicker from '../ui/color-picker';
 import SnowTheme from 'quill/themes/snow.js';
+import { BaseTooltip } from 'quill/themes/base.js';
+import icons from '../ui/icons.js';
 
 const ALIGNS = [false, 'center', 'right', 'justify'];
 
@@ -48,8 +50,81 @@ const FONTS = [false, 'serif', 'monospace'];
 const HEADERS = ['1', '2', '3', false];
 
 const SIZES = ['small', false, 'large', 'huge'];
+class SnowTooltip extends BaseTooltip {
+  static TEMPLATE = ['<a class="ql-preview" rel="noopener noreferrer" target="_blank" href="about:blank"></a>', '<input type="text" data-formula="e=mc^2" data-link="https://quilljs.com" data-video="Embed URL">', '<a class="ql-action"></a>', '<a class="ql-remove"></a>'].join('');
+  preview = this.root.querySelector('a.ql-preview');
+  listen() {
+    super.listen();
+    // @ts-expect-error Fix me later
+    this.root.querySelector('a.ql-action').addEventListener('click', event => {
+      if (this.root.classList.contains('ql-editing')) {
+        this.save();
+      } else {
+        // @ts-expect-error Fix me later
+        this.edit('link', this.preview.textContent);
+      }
+      event.preventDefault();
+    });
+    // @ts-expect-error Fix me later
+    this.root.querySelector('a.ql-remove').addEventListener('click', event => {
+      if (this.linkRange != null) {
+        const range = this.linkRange;
+        this.restoreFocus();
+        this.quill.formatText(range, 'link', false, Emitter.sources.USER);
+        delete this.linkRange;
+      }
+      event.preventDefault();
+      this.hide();
+    });
+    this.quill.on(Emitter.events.SELECTION_CHANGE, (range, oldRange, source) => {
+      if (range == null) return;
+      if (range.length === 0 && source === Emitter.sources.USER) {
+        const [link, offset] = this.quill.scroll.descendant(LinkBlot, range.index);
+        if (link != null) {
+          this.linkRange = new Range(range.index - offset, link.length());
+          const preview = LinkBlot.formats(link.domNode);
+          // @ts-expect-error Fix me later
+          this.preview.textContent = preview;
+          // @ts-expect-error Fix me later
+          this.preview.setAttribute('href', preview);
+          this.show();
+          const bounds = this.quill.getBounds(this.linkRange);
+          if (bounds != null) {
+            this.position(bounds);
+          }
+          return;
+        }
+      } else {
+        delete this.linkRange;
+      }
+      this.hide();
+    });
+  }
+  show() {
+    super.show();
+    this.root.removeAttribute('data-mode');
+  }
+}
 
 export default class MyTheme extends SnowTheme {
+  extendToolbar(toolbar) {
+    if (toolbar.container != null) {
+      toolbar.container.classList.add('ql-snow');
+      this.buildButtons(toolbar.container.querySelectorAll('button'), icons);
+      this.buildPickers(toolbar.container.querySelectorAll('select'), icons);
+      // @ts-expect-error
+      this.tooltip = new SnowTooltip(this.quill, this.options.bounds);
+      if (toolbar.container.querySelector('.ql-link')) {
+        this.quill.keyboard.addBinding({
+          key: 'k',
+          shortKey: true
+        }, (_range, context) => {
+          toolbar.handlers.link.call(toolbar, !context.format.link);
+        });
+      }
+    }
+  }
+
   buildPickers(selects, icons) {
     const Picker = Quill.import('ui/picker');
     const IconPicker = Quill.import('ui/icon-picker');
